@@ -9,6 +9,7 @@ bcrypt = Bcrypt()
 
 @board.before_app_request
 def load_logged_in_user():
+    # session['login'] = None
     user_email = session.get('login')
     if login is None:
         g.user = None
@@ -21,7 +22,8 @@ def home():
     if session.get('login') is None:
         return redirect("/login")
     else:
-        return redirect("/main")
+        books = db.session.query(Books)
+        return render_template("index.html", books = books)
 
 
 @board.route("/join", methods=["GET", "POST"])

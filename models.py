@@ -15,6 +15,7 @@ class Books(db.Model):
     description = db.Column(db.Text)
     link = db.Column(db.String(500))
     img_url = db.Column(db.String(500))
+    stock = db.Column(db.Integer, default=1)
 
 
 class User(db.Model):
