@@ -35,11 +35,6 @@
 <div class="books-card">
     {% for book in books %}
     <div class="card">
-        <!-- 이미지 불러오는 오류.. 
-            진자 템플릿 문법을 몰라서 오류나는 건지
-             아니면 url 주소에 띄어쓰기가 포함돼있어서 그런건지 
-             아니면 flask에서는 static 폴더에 저장해야 한다던데 
-             그거때문인지 찾아보기 -->
         <div class="card-img">
             <img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지">
         </div>
