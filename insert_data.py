@@ -11,12 +11,13 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 sql = "UPDATE books_tb SET img_url=%s WHERE _id=%s"
-path = "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/book_img"
+path = "book_img/"
 data_cnt = 32
 for i in range(1, data_cnt+1):
-    new_path = path + '/'+str(i)
+    new_path = path + str(i)
     try:
-        open(f'{new_path}.png')
+        real_path = "C:/Users/hmkim/Desktop/3-1-hyeminKim/static/" + new_path
+        open(f'{real_path}.png')
         new_path += '.png'
     except:
         new_path += '.jpg'

@@ -14,7 +14,7 @@ class Books(db.Model):
     isbn = db.Column(db.BigInteger)
     description = db.Column(db.Text)
     link = db.Column(db.String(500))
-    img_url = db.Column(db.String(500))
+    img_path = db.Column(db.String(500))
     stock = db.Column(db.Integer, default=1)
 
 
