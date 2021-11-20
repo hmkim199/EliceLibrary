@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, session, g, redirect, request, render_template, jsonify
 from flask_bcrypt import Bcrypt
-from models import Books, User
+from models import Books, User, Rent
 from db_connect import db
 
 board = Blueprint('board', __name__)
@@ -34,10 +34,12 @@ def rent():
         book.stock -= 1
         db.session.commit()
 
-        requester = request.form['renter']
-        renter = User.query.filter(User._id==requester).first()
+        user_id = request.form['renter']
+        # renter = User.query.filter(User._id==requester).first()
         # 대여 테이블 필요
-
+        rent = Rent(user_id, book._id)
+        db.session.add(rent)
+        db.session.commit()
         return jsonify({"result": "success"})
     return jsonify({"result": "disable"})
 
