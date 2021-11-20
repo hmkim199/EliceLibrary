@@ -35,8 +35,6 @@ def rent():
         db.session.commit()
 
         user_id = request.form['renter']
-        # renter = User.query.filter(User._id==requester).first()
-        # 대여 테이블 필요
         rent = Rent(user_id, book._id)
         db.session.add(rent)
         db.session.commit()
