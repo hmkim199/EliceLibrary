@@ -26,6 +26,22 @@ def home():
         return render_template("index.html", books = books)
 
 
+@board.route("/rent", methods=["PATCH"])
+def rent():
+    book_id = request.form['book_id']
+    book = Books.query.filter(Books._id==book_id).first()
+    if book.stock > 0:
+        book.stock -= 1
+        db.session.commit()
+
+        requester = request.form['renter']
+        renter = User.query.filter(User._id==requester).first()
+        # 대여 테이블 필요
+
+        return jsonify({"result": "success"})
+    return jsonify({"result": "disable"})
+
+
 @board.route("/join", methods=["GET", "POST"])
 def join():
     if session.get("login") is None:

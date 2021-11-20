@@ -27,7 +27,29 @@
 
 {% block scripts %}
 <script>
+    function rentBook(bookId){
 
+        let renter = `{{g.user._id}}`
+
+        $.ajax({
+            url: '/rent',
+            type: 'patch',
+            data: {
+                'book_id': bookId,
+                'renter': renter,
+            },
+            success: function (res){
+                let result = res['result']
+                    if (result == "success") {
+                            window.location.reload()
+                    } else if (result == "disable") {
+                            alert("현재 대여가 불가능한 책입니다.")
+                    } else {
+                        alert("문제가 생겼어요. 다시 시도해 주세요.")
+                    }
+            }
+        });
+    }
 </script>
 {% endblock %}
 
@@ -41,7 +63,7 @@
         <div class="card-body">
           <h5 class="book-name"><a href="#">{{ book.book_name }}</a></h5>
           <p class="stock">{{book.stock}}권 남음</p>
-          <a href="#" class="btn btn-primary">대여하기</a>
+          <a href="#" onclick="rentBook('{{ book._id }}')" class="btn btn-primary">대여하기</a>
         </div>
     </div>
     {% endfor %}
