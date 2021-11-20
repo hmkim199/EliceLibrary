@@ -27,13 +27,34 @@
 
 {% block scripts %}
 <script>
-    
+    function returnBook(book_id){
+        let renter = `{{ g.user._id }}`
+
+        $.ajax({
+            url: '/return',
+            type: 'post',
+            data: {
+                'book_id': book_id
+            },
+            success: function(res){
+                let result = res['result']
+                if (result == "success") {
+                    alert("반납 완료!");
+                    window.location.reload();
+                } else {
+                    alert("다시 시도해 주세요.")
+                }
+            }
+        });
+    }
 </script>
 {% endblock %}
 
 {% block content %}
 <div class="books-card">
     {% for record in records %}
+    {% if record.return_date is defined and record.return_date %}
+    {% else %}
     <div class="card">
         <div class="card-img">
             <img src="{{ url_for('static', filename = record.img_path) }}" class="card-img-top" alt="책 이미지">
@@ -44,6 +65,7 @@
           <a href="#" onclick="returnBook('{{ record._id }}'); return false;" class="btn btn-primary">반납하기</a>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}

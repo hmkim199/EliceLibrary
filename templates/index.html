@@ -40,14 +40,14 @@
             },
             success: function (res){
                 let result = res['result']
-                    if (result == "success") {
-                        alert("대여 완료!")
-                        window.location.reload()
-                    } else if (result == "disable") {
-                        alert("현재 대여가 불가능한 책입니다.")
-                    } else {
-                        alert("문제가 생겼어요. 다시 시도해 주세요.")
-                    }
+                if (result == "success") {
+                    alert("대여 완료!")
+                    window.location.reload()
+                } else if (result == "disable") {
+                    alert("현재 대여가 불가능한 책입니다.")
+                } else {
+                    alert("문제가 생겼어요. 다시 시도해 주세요.")
+                }
             }
         });
     }

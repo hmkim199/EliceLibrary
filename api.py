@@ -2,6 +2,7 @@ from flask import Flask, Blueprint, session, g, redirect, request, render_templa
 from flask_bcrypt import Bcrypt
 from models import Books, User, Rent
 from db_connect import db
+from datetime import date
 
 board = Blueprint('board', __name__)
 bcrypt = Bcrypt()
@@ -9,7 +10,6 @@ bcrypt = Bcrypt()
 
 @board.before_app_request
 def load_logged_in_user():
-    # session['login'] = None
     user_email = session.get('login')
     if login is None:
         g.user = None
@@ -41,6 +41,27 @@ def rent():
         return jsonify({"result": "success"})
     return jsonify({"result": "disable"})
 
+
+@board.route("/return", methods=["GET", "POST"])
+def return_book():
+    # get일 때
+    # 페이지 보여주기
+    # -> g.user._id에 해당하는 모든 로우를 rent_tb에서 select
+    # -> 책 id를 book_tb에서 id가 같은 로우 찾아서 이미지, 책이름 불러오기
+    records = db.session.query(Books.img_path, Books.book_name, Books._id, Rent.rent_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date==None).all()
+    print(records)
+    if request.method == 'GET':
+        return render_template('return.html', records = records)
+
+    # post일 때 반납 후 테이블에 반납일자 기록, book 재고 1올리기
+    else:
+        book_id = request.form['book_id']
+        book = Books.query.filter(Books._id==book_id).first()
+        rent = Rent.query.filter(Rent.book_id==book_id, Rent.user_id==g.user._id).first()
+        rent.return_date = date.today()
+        book.stock += 1
+        db.session.commit()
+        return jsonify({"result": "success"})
 
 @board.route("/join", methods=["GET", "POST"])
 def join():

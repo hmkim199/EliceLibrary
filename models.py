@@ -45,7 +45,7 @@ class Rent(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books_tb._id'), nullable=False)
     rent_date = db.Column(db.Date, default=date.today)
     due_date = db.Column(db.Date, default=date.today()+timedelta(days=14))
-    # return_date = db.Column(db.Date)
+    return_date = db.Column(db.Date)
 
     def __init__(self, user_id, book_id):
         self.user_id = user_id
