@@ -8,17 +8,17 @@
         let user_pw = $("#userPw").val()
         let user_pw2 = $("#userPw2").val()
 
+        if (user_pw != user_pw2) {
+            alert("비밀번호를 확인 해 주세요!")
+            return;
+        }
+
         if (user_name == '' || user_pw == '' || user_email=='') {
             alert("이메일과 패스워드를 입력 해 주세요.");
             return;
         }
 
-        if (!ValidateEmail(user_email)){
-            return;
-        }
-
-        if (user_pw != user_pw2) {
-            alert("비밀번호를 확인 해 주세요!")
+        if (!validateEmail(user_email) || !validatePW(user_pw) || !validateName(user_name)){
             return;
         }
 
@@ -43,7 +43,29 @@
         })
     }
 
-    function ValidateEmail(inputText)
+    function validateName(inputText){
+        const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|]+$/;
+        if(inputText.match(regex)){
+            return true;
+        }
+        else{
+            alert("이름은 영문 또는 한글만 입력 가능합니다.");
+            return false;
+        }
+    }
+
+    function validatePW(inputText){
+        var strongRegex = new RegExp("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+        if(inputText.match(strongRegex)){
+            return true;
+        }
+        else{
+            alert("영문, 숫자, 특수문자를 모두 포함하여 8자리 이상의 비밀번호를 입력하세요.");
+            return false;
+        }
+    }
+
+    function validateEmail(inputText)
     {
         let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if(inputText.match(mailformat))
