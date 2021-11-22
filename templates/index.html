@@ -65,7 +65,6 @@
         </div>
         <div class="card-body">
           <h5 class="book-name"><a href="{{ url_for('.bookInfo', book_id = book._id) }}">{{ book.book_name }}</a></h5>
-          <!-- todo: 평점 보여주기 -->
           <p class="stock">{{"★"*book.rating_avg}}</p>
           <p class="stock">{{book.stock}}권 남음</p>
           <a href="#" onclick="rentBook('{{ book._id }}'); return false;" class="btn btn-primary">대여하기</a>

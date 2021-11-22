@@ -58,7 +58,7 @@ class Rent(db.Model):
 
 class Comment(db.Model):
     __tablename__='comment_tb'
-    # 1. 작성자 2. 책id 2. 내용 3. 별점 4. 작성일
+    # 1. 작성자 2. 책id 3. 내용 4. 별점 5. 작성일
     _id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user_tb._id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books_tb._id'), nullable=False)
