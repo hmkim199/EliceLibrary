@@ -20,6 +20,7 @@ class Books(db.Model):
     stock = db.Column(db.Integer, default=1)
 
     rented = db.relationship("Rent", backref='books_tb')
+    commented = db.relationship("Comment", backref='books_tb')
 
 
 class User(db.Model):
@@ -31,6 +32,7 @@ class User(db.Model):
     pw = db.Column(db.String(200), nullable=False)
 
     renter = db.relationship("Rent", backref='user_tb')
+    commenter = db.relationship("Comment", backref='user_tb')
 
     def __init__(self, user_name, user_email, user_pw):
         self.name = user_name
@@ -50,3 +52,21 @@ class Rent(db.Model):
     def __init__(self, user_id, book_id):
         self.user_id = user_id
         self.book_id = book_id
+
+
+class Comment(db.Model):
+    __tablename__='comment_tb'
+    # 1. 작성자 2. 책id 2. 내용 3. 별점 4. 작성일
+    _id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_tb._id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books_tb._id'), nullable=False)
+    comment = db.Column(db.Text)
+    star_rating = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.Date, default=date.today)
+
+    def __init__(self, user_id, book_id, comment, star_rating):
+        self.user_id = user_id
+        self.book_id = book_id
+        self.comment = comment
+        self.star_rating = star_rating
+

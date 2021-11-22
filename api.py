@@ -25,6 +25,12 @@ def home():
         books = db.session.query(Books)
         return render_template("index.html", books = books)
 
+@board.route("/info/<int:book_id>")
+def bookInfo(book_id):
+    # 책 정보 모두, 
+    # 댓글과 평점 테이블 만들기
+    info={}
+    return render_template("info.html", info=info)
 
 @board.route("/rent", methods=["PATCH"])
 def rent():
