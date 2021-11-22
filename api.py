@@ -25,13 +25,24 @@ def home():
         books = db.session.query(Books)
         return render_template("index.html", books = books)
 
-@board.route("/info/<int:book_id>", methods=["GET"])
+@board.route("/info/<int:book_id>", methods=["GET", "POST"])
 def bookInfo(book_id):
-    # 책 정보 모두, 
-    # 댓글과 평점 테이블 만들기
-    book = Books.query.filter(Books._id==book_id).first()
-    comments = Comment.query.filter(Comment.book_id==book_id).all()
-    return render_template("info.html", book=book, comments=comments)
+    if request.method == "GET":
+        # 책 정보 모두, 
+        # 댓글과 평점 테이블 만들기
+        book = Books.query.filter(Books._id==book_id).first()
+        comments = Comment.query.filter(Comment.book_id==book_id).all()
+        return render_template("info.html", book=book, comments=comments)
+    else:
+        # 댓글 추가 -> comment 테이블에 값 추가
+        commenter = request.form['commenter']
+        book_id = request.form['book_id']
+        comment = request.form['comment']
+        star_rating = request.form['star_rating']
+        c = Comment(commenter, book_id, comment, star_rating)
+        db.session.add(c)
+        db.session.commit()
+        return jsonify({"result": "success"})
 
 @board.route("/rent", methods=["PATCH"])
 def rent():

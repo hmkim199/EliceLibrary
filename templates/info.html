@@ -7,6 +7,31 @@
 
 {% block scripts %}
 <script>
+    function addComment(bookId){
+        let commenter = `{{g.user._id}}`
+        let comment = $("#comment").val()
+        let star_rating = $("#star-rating").val()
+
+        $.ajax({
+            url: '/info/'+bookId,
+            type: 'post',
+            data: {
+                'book_id': bookId,
+                'commenter': commenter,
+                'comment': comment,
+                'star_rating': star_rating,
+            },
+            success: function(res){
+                let result = res['result']
+                if (result == "success") {
+                    alert("댓글 작성 완료!")
+                    window.location.reload()
+                } else {
+                    alert("문제가 생겼어요. 다시 시도해 주세요.")
+                }
+            }
+        });
+    }
 </script>
 {% endblock %}
 
@@ -52,10 +77,33 @@
           <h5 class="card-title">{{comment.user_id}}</h5>
           <p class="card-text">{{"★"*comment.star_rating}}</p>
           <p class="card-text">{{comment.comment}}</p>
+          {% if g.user._id == comment.user_id %}
+          <!-- todo : 수정하기 삭제하기 구현 -->
           <a href="#" class="btn btn-primary">수정하기</a>
           <a href="#" class="btn btn-primary">삭제하기</a>
+          {% endif %}
         </div>
     </div>
     {% endfor %}
+    <form class="row g-3" action="#" onsubmit="addComment('{{ book._id }}'); return false;">
+        <div class="col-md-6">
+          <label for="inputCity" class="form-label">댓글 달기</label>
+          <input type="text" class="form-control" id="comment">
+        </div>
+        <div class="col-md-4">
+          <label for="rating" class="form-label">평가하기</label>
+          <select id="star-rating" class="form-select">
+            <option selected>별점을 선택하세요.</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">작성하기</button>
+        </div>
+      </form>
 </div>
 {% endblock %}
