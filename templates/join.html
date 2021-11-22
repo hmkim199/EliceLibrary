@@ -9,7 +9,11 @@
         let user_pw2 = $("#userPw2").val()
 
         if (user_name == '' || user_pw == '' || user_email=='') {
-            alert("아이디와 패스워드를 입력 해 주세요.");
+            alert("이메일과 패스워드를 입력 해 주세요.");
+            return;
+        }
+
+        if (!ValidateEmail(user_email)){
             return;
         }
 
@@ -37,6 +41,20 @@
                 }
             }
         })
+    }
+
+    function ValidateEmail(inputText)
+    {
+        let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if(inputText.match(mailformat))
+        {
+            return true;
+        }
+        else
+        {
+            alert("유효하지 않은 이메일입니다.");
+            return false;
+        }
     }
 </script>
 {% endblock %}
