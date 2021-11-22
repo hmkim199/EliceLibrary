@@ -19,6 +19,7 @@ class Books(db.Model):
     link = db.Column(db.String(500))
     img_path = db.Column(db.String(500))
     stock = db.Column(db.Integer, default=1)
+    rating_avg = db.Column(db.Integer, default=0)
 
     rented = db.relationship("Rent", backref='books_tb')
     commented = db.relationship("Comment", backref='books_tb')

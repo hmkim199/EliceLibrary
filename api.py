@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from models import *
 from db_connect import db
 from datetime import date
+from sqlalchemy import func
 
 board = Blueprint('board', __name__)
 bcrypt = Bcrypt()
@@ -27,10 +28,11 @@ def home():
 
 @board.route("/info/<int:book_id>", methods=["GET", "POST"])
 def bookInfo(book_id):
+    book = Books.query.filter(Books._id==book_id).first()
+
     if request.method == "GET":
         # 책 정보 모두, 
         # 댓글과 평점 테이블 만들기
-        book = Books.query.filter(Books._id==book_id).first()
         comments = Comment.query.filter(Comment.book_id==book_id).order_by(Comment.created_at.desc()).all()
         return render_template("info.html", book=book, comments=comments)
     else:
@@ -42,6 +44,11 @@ def bookInfo(book_id):
         c = Comment(commenter, book_id, comment, star_rating)
         db.session.add(c)
         db.session.commit()
+        # todo: 평점 기록
+        ratings = db.session.query(db.func.avg(Comment.star_rating).label("rating_avg")).filter(Comment.book_id==book_id).first()
+        book.rating_avg = round(ratings.rating_avg)
+        db.session.commit()
+
         return jsonify({"result": "success"})
 
 @board.route("/rent", methods=["PATCH"])
