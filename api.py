@@ -60,7 +60,7 @@ def rent():
         db.session.commit()
 
         user_id = request.form['renter']
-        same_book = db.session.query(Rent).filter(Rent.book_id==book_id, Rent.user_id==user_id).first()
+        same_book = db.session.query(Rent).filter(Rent.book_id==book_id, Rent.user_id==user_id, Rent.return_date==None).first()
         if same_book is not None:
             return jsonify({"result": "duplicated"})
         rent = Rent(user_id, book._id)
@@ -85,11 +85,17 @@ def return_book():
     else:
         book_id = request.form['book_id']
         book = Books.query.filter(Books._id==book_id).first()
-        rent = Rent.query.filter(Rent.book_id==book_id, Rent.user_id==g.user._id).first()
+        rent = Rent.query.filter(Rent.book_id==book_id, Rent.user_id==g.user._id, Rent.return_date==None).first()
         rent.return_date = date.today()
         book.stock += 1
         db.session.commit()
         return jsonify({"result": "success"})
+
+@board.route("/history", methods=["GET"])
+def history():
+    records = db.session.query(Books.img_path, Books.book_name, Books._id, Rent.rent_date, Rent.return_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
+    print(records)
+    return render_template('history.html', records = records)
 
 @board.route("/join", methods=["GET", "POST"])
 def join():
