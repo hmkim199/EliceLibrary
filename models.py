@@ -2,7 +2,8 @@ from typing_extensions import ParamSpecArgs
 
 from sqlalchemy.sql.schema import ForeignKey
 from db_connect import db
-from datetime import *
+from datetime import datetime, date, timedelta
+from pytz import timezone
 
 class Books(db.Model):
     __tablename__ = 'books_tb'
@@ -60,9 +61,9 @@ class Comment(db.Model):
     _id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user_tb._id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books_tb._id'), nullable=False)
-    comment = db.Column(db.Text)
+    comment = db.Column(db.Text, nullable=False)
     star_rating = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.Date, default=date.today)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __init__(self, user_id, book_id, comment, star_rating):
         self.user_id = user_id

@@ -31,7 +31,7 @@ def bookInfo(book_id):
         # 책 정보 모두, 
         # 댓글과 평점 테이블 만들기
         book = Books.query.filter(Books._id==book_id).first()
-        comments = Comment.query.filter(Comment.book_id==book_id).all()
+        comments = Comment.query.filter(Comment.book_id==book_id).order_by(Comment.created_at.desc()).all()
         return render_template("info.html", book=book, comments=comments)
     else:
         # 댓글 추가 -> comment 테이블에 값 추가

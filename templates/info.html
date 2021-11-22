@@ -12,6 +12,11 @@
         let comment = $("#comment").val()
         let star_rating = $("#star-rating").val()
 
+        if (comment == '' || star_rating == '') {
+            alert("댓글과 평점은 필수 항목입니다.");
+            return;
+        }
+
         $.ajax({
             url: '/info/'+bookId,
             type: 'post',
