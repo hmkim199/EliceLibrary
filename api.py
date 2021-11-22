@@ -96,6 +96,9 @@ def join():
         else:
             user_name = request.form['user_name']
             user_email = request.form['user_email']
+            user = User.query.filter(User.email == user_email).first()
+            if user is not None:
+                return jsonify({"result": "duplicate"})
             user_pw = request.form['user_pw']
             pw_hash = bcrypt.generate_password_hash(user_pw).decode()
 
