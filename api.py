@@ -44,7 +44,6 @@ def bookInfo(book_id):
         c = Comment(commenter, book_id, comment, star_rating)
         db.session.add(c)
         db.session.commit()
-        # todo: 평점 기록
         ratings = db.session.query(db.func.avg(Comment.star_rating).label("rating_avg")).filter(Comment.book_id==book_id).first()
         book.rating_avg = round(ratings.rating_avg)
         db.session.commit()
@@ -93,8 +92,7 @@ def return_book():
 
 @board.route("/history", methods=["GET"])
 def history():
-    records = db.session.query(Books.img_path, Books.book_name, Books._id, Rent.rent_date, Rent.return_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
-    print(records)
+    records = db.session.query(Books.img_path, Books.book_name, Books._id, Books.rating_avg, Rent.rent_date, Rent.return_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
     return render_template('history.html', records = records)
 
 @board.route("/join", methods=["GET", "POST"])
