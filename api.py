@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, session, g, redirect, request, render_template, jsonify
 from flask_bcrypt import Bcrypt
-from models import Books, User, Rent
+from models import *
 from db_connect import db
 from datetime import date
 
@@ -25,12 +25,13 @@ def home():
         books = db.session.query(Books)
         return render_template("index.html", books = books)
 
-@board.route("/info/<int:book_id>")
+@board.route("/info/<int:book_id>", methods=["GET"])
 def bookInfo(book_id):
     # 책 정보 모두, 
     # 댓글과 평점 테이블 만들기
-    info={}
-    return render_template("info.html", info=info)
+    book = Books.query.filter(Books._id==book_id).first()
+    comments = Comment.query.filter(Comment.book_id==book_id).all()
+    return render_template("info.html", book=book, comments=comments)
 
 @board.route("/rent", methods=["PATCH"])
 def rent():

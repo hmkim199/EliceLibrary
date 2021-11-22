@@ -62,7 +62,7 @@
             <img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지">
         </div>
         <div class="card-body">
-          <h5 class="book-name"><a href="{{ url_for('info', book_id = book._id) }}">{{ book.book_name }}</a></h5>
+          <h5 class="book-name"><a href="{{ url_for('.bookInfo', book_id = book._id) }}">{{ book.book_name }}</a></h5>
           <p class="stock">{{book.stock}}권 남음</p>
           <a href="#" onclick="rentBook('{{ book._id }}'); return false;" class="btn btn-primary">대여하기</a>
         </div>

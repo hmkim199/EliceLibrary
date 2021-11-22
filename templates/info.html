@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+</script>
+{% endblock %}
+
+{% block content %}
+<img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지">
+<table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th scope="row">책이름</th>
+          <td>{{book.book_name}}</td>
+        </tr>
+        <tr>
+          <th scope="row">출판사</th>
+          <td>{{book.publisher}}</td>
+        </tr>
+        <tr>
+          <th scope="row">저자</th>
+          <td>{{book.author}}</td>
+        </tr>
+        <tr>
+            <th scope="row">출간일</th>
+            <td>{{book.publication_date}}</td>
+        </tr>
+        <tr>
+            <th scope="row">페이지 수</th>
+            <td>{{book.pages}}</td>
+        </tr>
+        <tr>
+            <th scope="row">ISBN 코드</th>
+            <td>{{book.isbn}}</td>
+        </tr>
+      </tbody>
+</table>
+<div>
+    <h3>책 소개</h3>
+    <p>{{book.description}}</p>
+</div>
+<div>
+    <h3>댓글</h3>
+    {% for comment in comments %}
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{comment.user_id}}</h5>
+          <p class="card-text">{{"★"*comment.star_rating}}</p>
+          <p class="card-text">{{comment.comment}}</p>
+          <a href="#" class="btn btn-primary">수정하기</a>
+          <a href="#" class="btn btn-primary">삭제하기</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
