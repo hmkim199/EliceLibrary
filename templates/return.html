@@ -60,7 +60,7 @@
             <img src="{{ url_for('static', filename = record.img_path) }}" class="card-img-top" alt="책 이미지">
         </div>
         <div class="card-body">
-          <h5 class="book-name"><a href="{{ url_for('.bookInfo', book_id = book._id) }}">{{ record.book_name }}</a></h5>
+          <h5 class="book-name"><a href="{{ url_for('.bookInfo', book_id = record._id) }}">{{ record.book_name }}</a></h5>
           <p class="rent-date">{{ record.rent_date }}</p>
           <a href="#" onclick="returnBook('{{ record._id }}'); return false;" class="btn btn-primary">반납하기</a>
         </div>

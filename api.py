@@ -60,6 +60,9 @@ def rent():
         db.session.commit()
 
         user_id = request.form['renter']
+        same_book = db.session.query(Rent).filter(Rent.book_id==book_id, Rent.user_id==user_id).first()
+        if same_book is not None:
+            return jsonify({"result": "duplicated"})
         rent = Rent(user_id, book._id)
         db.session.add(rent)
         db.session.commit()
@@ -74,7 +77,7 @@ def return_book():
     # -> g.user._id에 해당하는 모든 로우를 rent_tb에서 select
     # -> 책 id를 book_tb에서 id가 같은 로우 찾아서 이미지, 책이름 불러오기
     records = db.session.query(Books.img_path, Books.book_name, Books._id, Rent.rent_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date==None).all()
-    print(records)
+    # print(records)
     if request.method == 'GET':
         return render_template('return.html', records = records)
 
