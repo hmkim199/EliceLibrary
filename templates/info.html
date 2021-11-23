@@ -37,6 +37,62 @@
             }
         });
     }
+    // 수정해야함.
+    // function deleteComment(id) {
+    //     let author = `{{g.user._id}}`
+    //     $.ajax({
+    //         url: '/post',
+    //         type: 'DELETE',
+    //         data: {
+    //             'id': id,
+    //             'author': author
+    //         },
+    //         success: function (res) {
+    //             if (res['result'] == 'success') {
+    //                 alert("삭제되었습니다.")
+    //                 window.location.reload()
+    //             } else {
+    //                 alert("삭제 실패")
+    //             }
+    //         }
+    //     })
+    // }
+    // function postUpdateComment(id) {
+    //     let content = $(`#userEidContent${id}`).val()
+    //     $.ajax({
+    //         url: '/post',
+    //         type: 'PATCH',
+    //         data: {
+    //             "id": id,
+    //             "content": content
+    //         },
+    //         success: function (res) {
+    //             if (res['result'] == 'success') {
+    //                 alert("수정성공")
+    //                 window.location.href = '/'
+    //             }
+    //         }
+    //     })
+    // }
+    // function updateComment(id) {
+    //     let rating = $(`#user-rating${id}`).text()
+    //     let content = $(`#user-comment${id}`).text()
+    //     let tmpHtml = `<select id="star-rating-change" class="form-select">
+    //                     <option selected>별점을 선택하세요.</option>
+    //                     <option value="1">1</option>
+    //                     <option value="2">2</option>
+    //                     <option value="3">3</option>
+    //                     <option value="4">4</option>
+    //                     <option value="5">5</option>
+    //                   </select>
+    //                   <textarea id=userEidContent${id} class="form-control" rows="3"></textarea>`
+    //     let tmpBtn = `<button class="btn btn-sm btn-success" onclick="postUpdatePost(${id})">수정완료</button>`
+    //     $("#edit-area").empty()
+    //     $("#edit-area").append(tmpHtml)
+    //     $(`#editBtn${id}`).hide()
+    //     $(`#userEidContent${id}`).val(content)
+    //     $("#edit-area").append(tmpBtn)
+    // }
 </script>
 {% endblock %}
 
@@ -80,11 +136,14 @@
     <div class="card">
         <div class="card-body">
           <h5 class="card-title">{{comment.user_id}}</h5>
-          <p class="card-text">{{"★"*comment.star_rating}}</p>
-          <p class="card-text">{{comment.comment}}</p>
+
+          <div id="edit-area">
+            <p class="card-text" id="user-rating{{comment._id}}">{{"★"*comment.star_rating}}</p>
+            <p class="card-text" id="user-comment{{comment._id}}">{{comment.comment}}</p>
+          </div>
           {% if g.user._id == comment.user_id %}
           <!-- todo : 수정하기 삭제하기 구현 -->
-          <a href="#" class="btn btn-primary">수정하기</a>
+          <a href="#" onclick="updateComment('{{comment._id}}');return false;" class="btn btn-primary" id='editBtn{{comment._id}}'>수정하기</a>
           <a href="#" class="btn btn-primary">삭제하기</a>
           {% endif %}
         </div>
