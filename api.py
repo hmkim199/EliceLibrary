@@ -26,15 +26,18 @@ def home():
         books = db.session.query(Books)
         return render_template("index.html", books = books)
 
-@board.route("/info/<int:book_id>", methods=["GET", "POST"])
+
+@board.route("/info/<int:book_id>", methods=["GET", "POST", "PATCH", "DELETE"])
 def bookInfo(book_id):
     book = Books.query.filter(Books._id==book_id).first()
+    method = request.method
 
-    if request.method == "GET":
-        # 책 정보 모두, 
+    if method == "GET":
+        # 책 정보 모두, 댓글 정보 모두
         comments = Comment.query.filter(Comment.book_id==book_id).order_by(Comment.created_at.desc()).all()
         return render_template("info.html", book=book, comments=comments)
-    else:
+    
+    elif method == "POST":
         # 댓글 추가 -> comment 테이블에 값 추가
         commenter = request.form['commenter']
         book_id = request.form['book_id']
@@ -46,8 +49,29 @@ def bookInfo(book_id):
         ratings = db.session.query(db.func.avg(Comment.star_rating).label("rating_avg")).filter(Comment.book_id==book_id).first()
         book.rating_avg = round(ratings.rating_avg)
         db.session.commit()
-
         return jsonify({"result": "success"})
+    
+    elif method == "PATCH":
+        # 댓글 수정
+        comment_id = request.form['comment_id']
+        comment = request.form['comment']
+        star_rating = request.form['star_rating']
+        comment_to_edit = Comment.query.filter(Comment._id == comment_id).first()
+        comment_to_edit.comment = comment
+        comment_to_edit.star_rating = star_rating
+        comment_to_edit.created_at = datetime.now()
+        db.session.commit()
+        return jsonify({"result": "success"})
+    
+    else:
+        # 댓글 삭제
+        id = request.form["id"]
+        Comment.query.filter(Comment._id == id).delete()
+        db.session.commit()
+        return jsonify({"result": "success"})
+
+        
+
 
 @board.route("/rent", methods=["PATCH"])
 def rent():
@@ -89,10 +113,12 @@ def return_book():
         db.session.commit()
         return jsonify({"result": "success"})
 
+
 @board.route("/history", methods=["GET"])
 def history():
     records = db.session.query(Books.img_path, Books.book_name, Books._id, Books.rating_avg, Rent.rent_date, Rent.return_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
     return render_template('history.html', records = records)
+
 
 @board.route("/join", methods=["GET", "POST"])
 def join():

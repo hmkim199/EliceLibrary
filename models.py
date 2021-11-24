@@ -1,5 +1,3 @@
-from typing_extensions import ParamSpecArgs
-
 from sqlalchemy.sql.schema import ForeignKey
 from db_connect import db
 from datetime import datetime, date, timedelta
