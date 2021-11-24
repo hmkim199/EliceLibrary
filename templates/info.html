@@ -146,7 +146,7 @@
     {% for comment in comments %}
     <div class="card">
         <div class="card-body">
-          <h5 class="card-title">{{comment.user_id}}</h5>
+          <h5 class="card-title">{{comment.name}}</h5>
 
           <div id="edit-area">
             <p class="card-text" id="user-rating{{comment._id}}">{{"★"*comment.star_rating}}</p>

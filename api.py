@@ -34,7 +34,8 @@ def bookInfo(book_id):
 
     if method == "GET":
         # 책 정보 모두, 댓글 정보 모두
-        comments = Comment.query.filter(Comment.book_id==book_id).order_by(Comment.created_at.desc()).all()
+        comments = db.session.query(Comment._id, Comment.user_id, Comment.book_id, Comment.comment, Comment.star_rating, Comment.created_at, User.name).filter(Comment.book_id==book_id, Comment.user_id == User._id).order_by(Comment.created_at.desc()).all()
+        print(comments)
         return render_template("info.html", book=book, comments=comments)
     
     elif method == "POST":
