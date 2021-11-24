@@ -2,6 +2,26 @@
 
 {% block css %}
 <style>
+  #book-img{
+    width: 38%;
+    margin: 20px;
+    float: left;
+  }
+  #book-info-table{
+    float: right;
+    width: 50%;
+    margin: 20px;
+  }
+  #book-desc{
+    clear: both;
+    padding: 50px 0;
+  }
+  #comments{
+    margin: 0 0 100px 0;
+  }
+  #input-comment {
+    margin: 30px 0;
+  }
 </style>
 {% endblock %}
 
@@ -108,77 +128,78 @@
 {% endblock %}
 
 {% block content %}
-<img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지">
-<table class="table table-bordered">
-      <tbody>
-        <tr>
-          <th scope="row">책이름</th>
-          <td>{{book.book_name}}</td>
-        </tr>
-        <tr>
-          <th scope="row">출판사</th>
-          <td>{{book.publisher}}</td>
-        </tr>
-        <tr>
-          <th scope="row">저자</th>
-          <td>{{book.author}}</td>
-        </tr>
-        <tr>
-            <th scope="row">출간일</th>
-            <td>{{book.publication_date}}</td>
-        </tr>
-        <tr>
-            <th scope="row">페이지 수</th>
-            <td>{{book.pages}}</td>
-        </tr>
-        <tr>
-            <th scope="row">ISBN 코드</th>
-            <td>{{book.isbn}}</td>
-        </tr>
-      </tbody>
-</table>
-<div>
-    <h3>책 소개</h3>
-    <p>{{book.description}}</p>
-</div>
-<div>
-    <h3>댓글</h3>
-    {% for comment in comments %}
-    <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">{{comment.name}}</h5>
-
-          <div id="edit-area">
-            <p class="card-text" id="user-rating{{comment._id}}">{{"★"*comment.star_rating}}</p>
-            <p class="card-text" id="user-comment{{comment._id}}">{{comment.comment}}</p>
+<div id="info-wrapper">
+  <img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지" id="book-img">
+  <table class="table table-bordered" id="book-info-table">
+        <tbody>
+          <tr>
+            <th scope="row">책이름</th>
+            <td>{{book.book_name}}</td>
+          </tr>
+          <tr>
+            <th scope="row">출판사</th>
+            <td>{{book.publisher}}</td>
+          </tr>
+          <tr>
+            <th scope="row">저자</th>
+            <td>{{book.author}}</td>
+          </tr>
+          <tr>
+              <th scope="row">출간일</th>
+              <td>{{book.publication_date}}</td>
+          </tr>
+          <tr>
+              <th scope="row">페이지 수</th>
+              <td>{{book.pages}}</td>
+          </tr>
+          <tr>
+              <th scope="row">ISBN 코드</th>
+              <td>{{book.isbn}}</td>
+          </tr>
+        </tbody>
+  </table>
+  <div id="book-desc">
+      <h3>책 소개</h3>
+      <p>{{book.description}}</p>
+  </div>
+  <div id="comments">
+      <h3>댓글</h3>
+      {% for comment in comments %}
+      <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{comment.name}}</h5>
+  
+            <div id="edit-area">
+              <p class="card-text" id="user-rating{{comment._id}}">{{"★"*comment.star_rating}}</p>
+              <p class="card-text" id="user-comment{{comment._id}}">{{comment.comment}}</p>
+            </div>
+            {% if g.user._id == comment.user_id %}
+            <a href="#" onclick="updateComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-primary" id='editBtn{{comment._id}}'>수정하기</a>
+            <a href="#" onclick="deleteComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-primary" id='deleteBtn{{comment._id}}'>삭제하기</a>
+            {% endif %}
           </div>
-          {% if g.user._id == comment.user_id %}
-          <!-- todo : 수정하기 삭제하기 구현 -->
-          <a href="#" onclick="updateComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-primary" id='editBtn{{comment._id}}'>수정하기</a>
-          <a href="#" onclick="deleteComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-primary" id='deleteBtn{{comment._id}}'>삭제하기</a>
-          {% endif %}
-        </div>
-    </div>
-    {% endfor %}
-    <form class="row g-3" action="#" onsubmit="addComment('{{ book._id }}'); return false;">
-        <div class="col-md-6">
-          <label for="inputCity" class="form-label">댓글 달기</label>
-          <input type="text" class="form-control" id="comment">
-        </div>
-        <div class="col-md-4">
-          <label for="rating" class="form-label">평가하기</label>
-          <select id="star-rating" class="form-select">
-            <option selected disabled hidden>별점을 선택하세요.</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">작성하기</button>
-        </div>
-      </form>
+      </div>
+      {% endfor %}
+      <form id="input-comment" class="row g-3" action="#" onsubmit="addComment('{{ book._id }}'); return false;">
+          <div class="col-md-6">
+            <label for="inputCity" class="form-label">댓글 달기</label>
+            <input type="text" class="form-control" id="comment">
+          </div>
+          <div class="col-md-4">
+            <label for="rating" class="form-label">평가하기</label>
+            <select id="star-rating" class="form-select">
+              <option selected disabled hidden>별점을 선택하세요.</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">작성하기</button>
+          </div>
+        </form>
+  </div>
 </div>
 {% endblock %}
