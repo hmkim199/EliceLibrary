@@ -14,8 +14,9 @@
     }
 
     .card-img {
-        height: 60%;
+        height: 50%;
         overflow: hidden;
+        border-bottom: 1px solid lightgray;
     }
 
     .card-img-top {
@@ -24,6 +25,26 @@
         max-height: 400px;
         position: relative;
     }
+
+    .card-body{
+        padding: 2rem 1rem 1rem 1rem;
+        margin: auto;
+        line-height: 50%;
+    }
+
+    .card-body > *{
+        padding-bottom: 1rem;
+    }
+
+    .btn {
+        padding: 0.375rem 0.75rem;
+    }
+
+    #pagenation {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
 </style>
 {% endblock %}
 
@@ -55,6 +76,7 @@
             }
         });
     }
+
 </script>
 {% endblock %}
 
@@ -66,12 +88,25 @@
             <img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지">
         </div>
         <div class="card-body">
-          <h5 class="book-name"><a href="{{ url_for('.bookInfo', book_id = book._id) }}">{{ book.book_name }}</a></h5>
-          <p class="stock">{{"★"*book.rating_avg}}</p>
+          <h5 class="book-name">
+              <a href="{{ url_for('.bookInfo', book_id = book._id) }}">
+                {{ book.book_name }}
+              </a>
+          </h5>
+          <p class="rating">{{"★"*book.rating_avg + "☆"*(5-book.rating_avg)}}</p>
           <p class="stock">{{book.stock}}권 남음</p>
-          <a href="#" onclick="rentBook('{{ book._id }}'); return false;" class="btn btn-primary">대여하기</a>
+          <a href="#" onclick="rentBook('{{ book._id }}'); return false;" class="btn btn-warning">대여하기</a>
         </div>
     </div>
     {% endfor %}
+</div>
+<div id="pagenation">
+    {% if page > 0 %}
+    <a href="{{ url_for('.home', page=page-1) }}" id="left-btn" class="btn btn-warning">◀</a>
+    {% endif %}
+    <p id="this-page" style="display: inline; padding: 5px;"><b>{{page+1}}</b></p>
+    {% if page|int() != last_page|int() %}
+    <a href="{{ url_for('.home', page=page+1) }}" id="right-btn" class="btn btn-warning">▶</a>
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 
+{% block css %}
+<style>
+    .card{
+        width: 680px;
+        text-align: center;
+        margin:auto;
+    }
+    .join-wrapper{
+        margin: 5rem;
+    }
+</style>
+{% endblock %}
+
 {% block scripts %}
 <script>
     function regist() {
@@ -82,38 +95,38 @@
 {% endblock %}
 
 {% block content %}
-<h2 class="title">Elice 도서관 회원가입</h2>
-<hr>
-<div class="card">
-    <div class="card-body">
-        <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label">Name</label>
-            <div class="col-sm-10">
-                <input type="text" id='userName' class="form-control" placeholder="이름">
+<div class="join-wrapper">
+    <h2 class="title">Elice 도서관 회원가입</h2>
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" id='userName' class="form-control" placeholder="이름">
+                </div>
             </div>
-        </div>
-        <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label">Email</label>
-            <div class="col-sm-10">
-                <input type="text" id='userEmail' class="form-control" placeholder="이메일">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="text" id='userEmail' class="form-control" placeholder="이메일">
+                </div>
             </div>
-        </div>
-        <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label">Password</label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="userPw">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="userPw">
+                </div>
             </div>
-        </div>
-        <div class="mb-3 row">
-            <label class="col-sm-2 col-form-label">Password Check</label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="userPw2">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Password Check</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="userPw2">
+                </div>
             </div>
+            <button class="btn btn-warning" onclick=regist()>회원가입하기</button>
+            <a href="/login" class="btn btn-warning">로그인하기</a>
         </div>
-        <button class="btn btn-primary" onclick=regist()>회원가입하기</button>
-        <a href="/login" class="btn btn-primary">로그인하기</a>
     </div>
 </div>
-<hr>
 
 {% endblock %}

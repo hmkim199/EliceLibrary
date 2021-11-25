@@ -4,6 +4,7 @@ from models import *
 from db_connect import db
 from datetime import date
 from sqlalchemy import func
+import math
 
 board = Blueprint('board', __name__)
 bcrypt = Bcrypt()
@@ -18,13 +19,20 @@ def load_logged_in_user():
         g.user = db.session.query(User).filter(User.email == user_email).first()
 
 
-@board.route("/")
-def home():
+@board.route('/', defaults={'page': 0})
+@board.route("/<int:page>")
+def home(page):
     if session.get('login') is None:
         return redirect("/login")
     else:
+        page_size = 8
         books = db.session.query(Books)
-        return render_template("index.html", books = books)
+        last_page = math.ceil(len(books.all()) / page_size) - 1
+        if page_size:
+            books = books.limit(page_size)
+        if page:
+            books = books.offset(page*page_size).all()
+        return render_template("index.html", books = books, page=page, last_page=last_page)
 
 
 @board.route("/info/<int:book_id>", methods=["GET", "POST", "PATCH", "DELETE"])
@@ -70,8 +78,6 @@ def bookInfo(book_id):
         Comment.query.filter(Comment._id == id).delete()
         db.session.commit()
         return jsonify({"result": "success"})
-
-        
 
 
 @board.route("/rent", methods=["PATCH"])

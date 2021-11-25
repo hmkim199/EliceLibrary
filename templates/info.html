@@ -22,6 +22,9 @@
   #input-comment {
     margin: 30px 0;
   }
+  #edit-delete-btns{
+    margin: 20px 0 0 0;
+  }
 </style>
 {% endblock %}
 
@@ -32,7 +35,7 @@
         let comment = $("#comment").val()
         let star_rating = $("#star-rating").val()
 
-        if (comment == '' || star_rating == '') {
+        if (comment == "" || star_rating == null) {
             alert("댓글과 평점은 필수 항목입니다.");
             return;
         }
@@ -56,7 +59,7 @@
             }
         });
     }
-    // 수정해야함.
+
     function deleteComment(commentId, bookId) {
       $.ajax({
           url: '/info/'+bookId,
@@ -74,10 +77,16 @@
           }
       })
     }
+
     function postUpdateComment(commentId, bookId) {
       let star_rating = $(`#user-rating${commentId}`).val()
       let comment = $(`#userEidContent${commentId}`).val()
-      console.log(star_rating)
+      
+      if (comment == "" || star_rating == null) {
+          alert("댓글과 평점은 필수 항목입니다.");
+          return;
+      }
+
       $.ajax({
           url: '/info/'+bookId,
           type: 'PATCH',
@@ -94,15 +103,16 @@
           }
       })
     }
+
     function updateComment(commentId, bookId) {
       let rating = $(`#user-rating${commentId}`).text()
       let content = $(`#user-comment${commentId}`).text()
-      let tmpHtml = `<form class="row g-3" action="#" onsubmit="postUpdateComment(${commentId}, ${bookId}); return false;">
-                        <div class="col-md-6">
+      let tmpHtml = `<form class="row g-2" action="#" onsubmit="postUpdateComment(${commentId}, ${bookId}); return false;">
+                        <div class="col-md-7">
                           <label for="inputCity" class="form-label">댓글 수정</label>
                           <input type="text" class="form-control" id="userEidContent${commentId}">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                           <label for="rating" class="form-label">평가하기</label>
                           <select id="user-rating${commentId}" class="form-select">
                             <option selected disabled hidden>별점을 선택하세요.</option>
@@ -114,7 +124,7 @@
                           </select>
                         </div>
                         <div class="col-12">
-                          <button type="submit" class="btn btn-primary">수정 완료</button>
+                          <button type="submit" class="btn btn-warning">수정 완료</button>
                         </div>
                       </form>`
       $("#edit-area").empty()
@@ -174,18 +184,20 @@
               <p class="card-text" id="user-comment{{comment._id}}">{{comment.comment}}</p>
             </div>
             {% if g.user._id == comment.user_id %}
-            <a href="#" onclick="updateComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-primary" id='editBtn{{comment._id}}'>수정하기</a>
-            <a href="#" onclick="deleteComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-primary" id='deleteBtn{{comment._id}}'>삭제하기</a>
+            <div id="edit-delete-btns">
+              <a href="#" onclick="updateComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-warning" id='editBtn{{comment._id}}'>수정하기</a>
+              <a href="#" onclick="deleteComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-warning" id='deleteBtn{{comment._id}}'>삭제하기</a>  
+            </div>
             {% endif %}
           </div>
       </div>
       {% endfor %}
-      <form id="input-comment" class="row g-3" action="#" onsubmit="addComment('{{ book._id }}'); return false;">
-          <div class="col-md-6">
+      <form id="input-comment" class="row g-2" action="#" onsubmit="addComment('{{ book._id }}'); return false;">
+          <div class="col-md-7">
             <label for="inputCity" class="form-label">댓글 달기</label>
-            <input type="text" class="form-control" id="comment">
+            <input text type="text" class="form-control" id="comment">
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <label for="rating" class="form-label">평가하기</label>
             <select id="star-rating" class="form-select">
               <option selected disabled hidden>별점을 선택하세요.</option>
@@ -197,7 +209,7 @@
             </select>
           </div>
           <div class="col-12">
-            <button type="submit" class="btn btn-primary">작성하기</button>
+            <button type="submit" class="btn btn-warning">작성하기</button>
           </div>
         </form>
   </div>
