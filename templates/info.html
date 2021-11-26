@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+  #book-img{
+    width: 38%;
+    margin: 20px;
+    float: left;
+  }
+  #book-info-table{
+    float: right;
+    width: 50%;
+    margin: 20px;
+  }
+  #book-desc{
+    clear: both;
+    padding: 50px 0;
+  }
+  #comments{
+    margin: 0 0 100px 0;
+  }
+  #input-comment {
+    margin: 30px 0;
+  }
+  #edit-delete-btns{
+    margin: 20px 0 0 0;
+  }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function addComment(bookId){
+        let commenter = `{{g.user._id}}`
+        let comment = $("#comment").val()
+        let star_rating = $("#star-rating").val()
+
+        if (comment == "" || star_rating == null) {
+            alert("댓글과 평점은 필수 항목입니다.");
+            return;
+        }
+
+        $.ajax({
+            url: '/info/'+bookId,
+            type: 'post',
+            data: {
+                'book_id': bookId,
+                'commenter': commenter,
+                'comment': comment,
+                'star_rating': star_rating,
+            },
+            success: function(res){
+                if (res['result'] == "success") {
+                    alert("댓글 작성 완료!")
+                    window.location.reload()
+                } else {
+                    alert("문제가 생겼어요. 다시 시도해 주세요.")
+                }
+            }
+        });
+    }
+
+    function deleteComment(commentId, bookId) {
+      $.ajax({
+          url: '/info/'+bookId,
+          type: 'DELETE',
+          data: {
+              'id': commentId,
+          },
+          success: function (res) {
+              if (res['result'] == 'success') {
+                  alert("삭제되었습니다.")
+                  window.location.reload()
+              } else {
+                  alert("삭제 실패")
+              }
+          }
+      })
+    }
+
+    function postUpdateComment(commentId, bookId) {
+      let star_rating = $(`#user-rating${commentId}`).val()
+      let comment = $(`#userEidContent${commentId}`).val()
+      
+      if (comment == "" || star_rating == null) {
+          alert("댓글과 평점은 필수 항목입니다.");
+          return;
+      }
+
+      $.ajax({
+          url: '/info/'+bookId,
+          type: 'PATCH',
+          data: {
+              "comment_id": commentId,
+              "comment": comment,
+              "star_rating": star_rating,
+          },
+          success: function (res) {
+              if (res['result'] == 'success') {
+                  alert("수정되었습니다.")
+                  window.location.reload()
+              }
+          }
+      })
+    }
+
+    function updateComment(commentId, bookId) {
+      let rating = $(`#user-rating${commentId}`).text()
+      let content = $(`#user-comment${commentId}`).text()
+      let tmpHtml = `<form class="row g-2" action="#" onsubmit="postUpdateComment(${commentId}, ${bookId}); return false;">
+                        <div class="col-md-7">
+                          <label for="inputCity" class="form-label">댓글 수정</label>
+                          <input type="text" class="form-control" id="userEidContent${commentId}">
+                        </div>
+                        <div class="col-md-3">
+                          <label for="rating" class="form-label">평가하기</label>
+                          <select id="user-rating${commentId}" class="form-select">
+                            <option selected disabled hidden>별점을 선택하세요.</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                          </select>
+                        </div>
+                        <div class="col-12">
+                          <button type="submit" class="btn btn-warning">수정 완료</button>
+                        </div>
+                      </form>`
+      $("#edit-area").empty()
+      $("#edit-area").append(tmpHtml)
+      $(`#editBtn${commentId}`).hide()
+      $(`#deleteBtn${commentId}`).hide()
+      $(`#userEidContent${commentId}`).val(content)
+      $(`#user-rating${commentId}`).children().first().text(rating.length)
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="info-wrapper">
+  <img src="{{ url_for('static', filename = book.img_path) }}" class="card-img-top" alt="책 이미지" id="book-img">
+  <table class="table table-bordered" id="book-info-table">
+        <tbody>
+          <tr>
+            <th scope="row">책이름</th>
+            <td>{{book.book_name}}</td>
+          </tr>
+          <tr>
+            <th scope="row">출판사</th>
+            <td>{{book.publisher}}</td>
+          </tr>
+          <tr>
+            <th scope="row">저자</th>
+            <td>{{book.author}}</td>
+          </tr>
+          <tr>
+              <th scope="row">출간일</th>
+              <td>{{book.publication_date}}</td>
+          </tr>
+          <tr>
+              <th scope="row">페이지 수</th>
+              <td>{{book.pages}}</td>
+          </tr>
+          <tr>
+              <th scope="row">ISBN 코드</th>
+              <td>{{book.isbn}}</td>
+          </tr>
+        </tbody>
+  </table>
+  <div id="book-desc">
+      <h3>책 소개</h3>
+      <p>{{book.description}}</p>
+  </div>
+  <div id="comments">
+      <h3>댓글</h3>
+      {% for comment in comments %}
+      <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{comment.name}}</h5>
+  
+            <div id="edit-area">
+              <p class="card-text" id="user-rating{{comment._id}}">{{"★"*comment.star_rating}}</p>
+              <p class="card-text" id="user-comment{{comment._id}}">{{comment.comment}}</p>
+            </div>
+            {% if g.user._id == comment.user_id %}
+            <div id="edit-delete-btns">
+              <a href="#" onclick="updateComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-warning" id='editBtn{{comment._id}}'>수정하기</a>
+              <a href="#" onclick="deleteComment('{{comment._id}}', '{{book._id}}');return false;" class="btn btn-warning" id='deleteBtn{{comment._id}}'>삭제하기</a>  
+            </div>
+            {% endif %}
+          </div>
+      </div>
+      {% endfor %}
+      <form id="input-comment" class="row g-2" action="#" onsubmit="addComment('{{ book._id }}'); return false;">
+          <div class="col-md-7">
+            <label for="inputCity" class="form-label">댓글 달기</label>
+            <input text type="text" class="form-control" id="comment">
+          </div>
+          <div class="col-md-3">
+            <label for="rating" class="form-label">평가하기</label>
+            <select id="star-rating" class="form-select">
+              <option selected disabled hidden>별점을 선택하세요.</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-warning">작성하기</button>
+          </div>
+        </form>
+  </div>
+</div>
+{% endblock %}
