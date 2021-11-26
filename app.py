@@ -3,15 +3,16 @@ from flask import Flask
 from db_connect import db
 from api import board
 from flask_bcrypt import Bcrypt
-
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 app.register_blueprint(board)
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:khm9339@127.0.0.1:3306/elice_library"
+mysql_pw = os.environ.get("MYSQL_PASSWORD")
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:"+mysql_pw+"@127.0.0.1:3306/elice_library"
 app.config['SQLALCHEMY_TRACK_MODIFICATION']=False
-app.secret_key = 'codedbyhmkim199'
+app.secret_key = os.environ.get("APP_SECRET_KEY")
 
 
 db.init_app(app)
