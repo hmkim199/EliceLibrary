@@ -114,7 +114,9 @@ def return_book():
     else:
         book_id = request.form['book_id']
         book = Books.query.filter(Books._id==book_id).first()
-        rent = Rent.query.filter(Rent.book_id==book_id, Rent.user_id==g.user._id, Rent.return_date==None).first()
+        rent = Rent.query.filter(
+            Rent.book_id==book_id, Rent.user_id==g.user._id, Rent.return_date==None
+            ).first()
         rent.return_date = date.today()
         book.stock += 1
         db.session.commit()
@@ -123,7 +125,9 @@ def return_book():
 
 @board.route("/history", methods=["GET"])
 def history():
-    records = db.session.query(Books.img_path, Books.book_name, Books._id, Books.rating_avg, Rent.rent_date, Rent.return_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
+    records = db.session.query(
+        Books.img_path, Books.book_name, Books._id, Books.rating_avg, Rent.rent_date, Rent.return_date
+        ).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
     return render_template('history.html', records = records)
 
 
