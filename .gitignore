@@ -109,7 +109,11 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# gitlab
+.gitlab/
+
 # Environments
+.elice_library/
 .env
 .venv
 env/
@@ -143,6 +147,7 @@ dmypy.json
 cython_debug/
 
 ### VisualStudioCode ###
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
