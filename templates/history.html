@@ -38,7 +38,7 @@
         </div>
         <div class="card-body">
           <h5 class="book-name"><a href="{{ url_for('.bookInfo', book_id = record._id) }}">{{ record.book_name }}</a></h5>
-          <p class="rating-avg">{{ "★"* record.rating_avg + "☆"*(5-book.rating_avg) }}</p>
+          <p class="rating-avg">{{ "★"* record.rating_avg + "☆"*(5-record.rating_avg) }}</p>
           <p class="rent-date">{{ record.rent_date }}</p>
           <p class="return-date">~ {{ record.return_date }}</p>
         </div>
