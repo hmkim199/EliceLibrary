@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.register_blueprint(board)
 
 load_dotenv()
+
 mysql_pw = os.environ.get("MYSQL_PASSWORD")
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:"+mysql_pw+"@127.0.0.1:3306/elice_library"
 app.config['SQLALCHEMY_TRACK_MODIFICATION']=False
