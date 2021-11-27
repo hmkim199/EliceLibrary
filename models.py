@@ -56,8 +56,8 @@ class Rent(db.Model):
     _id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user_tb._id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books_tb._id'), nullable=False)
-    rent_date = db.Column(db.Date, default=date.today)
-    due_date = db.Column(db.Date, default=date.today()+timedelta(days=14))
+    rent_date = db.Column(db.Date, default=datetime.now(timezone('Asia/Seoul')).date)
+    due_date = db.Column(db.Date, default=datetime.now(timezone('Asia/Seoul')).date()+timedelta(days=14))
     return_date = db.Column(db.Date)
 
     def __init__(self, user_id, book_id):
@@ -73,7 +73,7 @@ class Comment(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books_tb._id'), nullable=False)
     comment = db.Column(db.Text, nullable=False)
     star_rating = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone('Asia/Seoul')))
 
     def __init__(self, user_id, book_id, comment, star_rating):
         self.user_id = user_id

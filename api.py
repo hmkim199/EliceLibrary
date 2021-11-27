@@ -68,7 +68,7 @@ def bookInfo(book_id):
         comment_to_edit = Comment.query.filter(Comment._id == comment_id).first()
         comment_to_edit.comment = comment
         comment_to_edit.star_rating = star_rating
-        comment_to_edit.created_at = datetime.now()
+        comment_to_edit.created_at = datetime.now(timezone('Asia/Seoul'))
         db.session.commit()
         return jsonify({"result": "success"})
     
@@ -117,7 +117,7 @@ def return_book():
         rent = Rent.query.filter(
             Rent.book_id==book_id, Rent.user_id==g.user._id, Rent.return_date==None
             ).first()
-        rent.return_date = date.today()
+        rent.return_date = datetime.now(timezone('Asia/Seoul')).date()
         book.stock += 1
         db.session.commit()
         return jsonify({"result": "success"})
