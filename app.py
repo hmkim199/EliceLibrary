@@ -1,8 +1,8 @@
 import pymysql
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from db_connect import db
 from api import board
-from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 import os
 
