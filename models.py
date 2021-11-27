@@ -16,11 +16,22 @@ class Books(db.Model):
     description = db.Column(db.Text)
     link = db.Column(db.String(500))
     img_path = db.Column(db.String(500))
-    stock = db.Column(db.Integer, default=1)
+    stock = db.Column(db.Integer, default=2)
     rating_avg = db.Column(db.Integer, default=0)
 
     rented = db.relationship("Rent", backref='books_tb')
     commented = db.relationship("Comment", backref='books_tb')
+
+    def __init__(self, book_name, publisher, author, publication_date, pages, isbn, description, link, img_path):
+        self.book_name = book_name
+        self.publisher = publisher
+        self.author = author
+        self.publication_date = publication_date
+        self.pages = pages
+        self.isbn = isbn
+        self.description = description
+        self.link = link
+        self.img_path = img_path
 
 
 class User(db.Model):

@@ -12,7 +12,7 @@ app.register_blueprint(board)
 load_dotenv()
 
 mysql_pw = os.environ.get("MYSQL_PASSWORD")
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:"+mysql_pw+"@127.0.0.1:3306/elice_library"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:"+mysql_pw+"@localhost:3306/elice_library"
 app.config['SQLALCHEMY_TRACK_MODIFICATION']=False
 app.secret_key = os.environ.get("APP_SECRET_KEY")
 
@@ -22,4 +22,4 @@ bcrypt = Bcrypt(app)
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', 5000, debug=True)
+    app.run('0.0.0.0', 80, debug=False)
