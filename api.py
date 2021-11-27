@@ -126,8 +126,7 @@ def return_book():
 @board.route("/history", methods=["GET"])
 def history():
     records = db.session.query(
-        Books.img_path, Books.book_name, Books._id, Books.rating_avg, Rent.rent_date, Rent.return_date
-        ).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
+        Books.img_path, Books.book_name, Books._id, Books.rating_avg, Rent.rent_date, Rent.return_date).filter(Books._id==Rent.book_id, Rent.user_id==g.user._id, Rent.return_date.isnot(None)).all()
     return render_template('history.html', records = records)
 
 
